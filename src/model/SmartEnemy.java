@@ -1,31 +1,32 @@
 package model;
 
-import model.GameObject;
-import model.Handler;
-import model.ID;
 import ui.Trail;
 
 import java.awt.*;
+import java.util.LinkedList;
 
 public class SmartEnemy extends GameObject {
     private Handler handler;
     private GameObject targetPlayer;
 
-
     public SmartEnemy(float x, float y, ID id, Handler handler) {
         super(x, y, id);
         this.handler = handler;
-
-        for (int j = 0; j < handler.object.size(); j++) {
-            if (handler.object.get(j).getID() == ID.Player)
-                this.targetPlayer = handler.object.get(j);
-                                            //searches through all GameObjects, if a player is found, then our
-                                            //targetPlayer variable is initialized..
-        }
-
+        initializeTarget();
     }
 
+    private void initializeTarget() {
+        LinkedList<GameObject> gameObjects = handler.getGameObjects();
+        for (GameObject gameObj : gameObjects) {
+            if (isTargetPlayer(gameObj)) {
+                targetPlayer = gameObj;
+            }
+        }
+    }
 
+    private boolean isTargetPlayer(GameObject gameObj) {
+        return (gameObj.getID() == ID.Player);
+    }
 
     @Override
     public void tick() {
