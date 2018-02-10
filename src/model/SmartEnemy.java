@@ -7,12 +7,6 @@ import ui.Trail;
 
 import java.awt.*;
 
-/**
- * Created by James on 2017-01-01
- * This is a "smarter" enemy, i.e. this actually tracks the location of the player
- *
- */
-
 public class SmartEnemy extends GameObject {
     private Handler handler;
     private GameObject targetPlayer;
