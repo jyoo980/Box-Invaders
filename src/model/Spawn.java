@@ -5,42 +5,41 @@ import ui.Window;
 
 import java.util.Random;
 
-/**
- * Created by James on 2016-12-29.
- */
 public class Spawn {
     private Handler handler;
     private Window.HeadUpDisplay hud;
     private int scoreCount;
-    private Random r;
+    private Random rand;
 
     public Spawn(Handler handler, Window.HeadUpDisplay hud) {
         this.handler = handler;
         this.hud = hud;
-        r = new Random();
-
+        rand = new Random();
     }
 
-    /**
-     * Each time the "clock" reaches 1000, the level will increase by one.
-     * - Every time the "clock" has a value of a multiple of 500, another enemy is added
-     */
     public void tick() {
         scoreCount++;
-
-
         if (scoreCount % 500 == 0) {
-            this.hud.setLevel(this.hud.getLevel() + 1);
-            this.handler.addObject(new BasicEnemy(r.nextInt(Game.WIDTH), r.nextInt(Game.HEIGHT), ID.Enemy, this.handler));
-
+            incrementLevel();
+            spawnBasicEnemy();
             if(scoreCount % 1000 == 0)
-                this.handler.addObject(new FasterEnemy(r.nextInt(Game.WIDTH), r.nextInt(Game.HEIGHT), ID.FastEnemy, this.handler));
-                this.handler.addObject(new SmartEnemy(r.nextInt(Game.WIDTH), r.nextInt(Game.HEIGHT), ID.SmartEnemy, this.handler));
-
-
-    }
+                spawnFasterAndSmarterEnemies();
+        }
     }
 
+    private void incrementLevel() {
+        hud.setLevel(hud.getLevel() + 1);
+    }
+
+    private void spawnBasicEnemy() {
+        BasicEnemy b = new BasicEnemy(rand.nextInt(Game.WIDTH), rand.nextInt(Game.HEIGHT), ID.Enemy, handler);
+        handler.addObject(b);
+    }
+
+    private void spawnFasterAndSmarterEnemies() {
+        FasterEnemy f = new FasterEnemy(rand.nextInt(Game.WIDTH), rand.nextInt(Game.HEIGHT), ID.FastEnemy, handler);
+        SmartEnemy s = new SmartEnemy(rand.nextInt(Game.WIDTH), rand.nextInt(Game.HEIGHT), ID.SmartEnemy, handler);
+        handler.addObject(f);
+        handler.addObject(s);
+    }
 }
-
-
