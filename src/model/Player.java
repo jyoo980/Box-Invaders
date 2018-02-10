@@ -5,61 +5,64 @@ import ui.Trail;
 import ui.Window;
 
 import java.awt.*;
-import java.util.Random;
+import java.util.LinkedList;
 import static ui.Window.HeadUpDisplay.greenValue;
 
-/**
- * Created by James on 2016-12-28.
- */
-
 public class Player extends GameObject {
-
-    Random r = new Random();
-    Handler handler;            //the handler associated with this specific Player GameObject
-    boolean hitState;           //true if hit, else false
+    private Handler handler;
+    private boolean isPlayerHit;
 
     public Player(int x, int y, ID id, Handler handler) {
         super(x, y, id);
         this.handler = handler;
-
-        hitState = false;
+        isPlayerHit = false;
     }
 
     @Override
     public void tick() {
         this.x += velX;
         this.y += velY;
-
-        this.x = Game.clamp(this.x, 0, Game.WIDTH - 32);
-        this.y = Game.clamp(this.y, 0, Game.HEIGHT - 72);
-
-        handler.addObject(new Trail(x, y, 32, 32, 0.05f, ID.Player,Color.RED, handler));
-
+        boundPlayer();
+        generateTrail();
         collision();
-
     }
 
-    public void collision() {
-        for (int j = 0; j < Handler.object.size(); j++) {
-            GameObject tempObj = Handler.object.get(j);
+    private void boundPlayer() {
+        this.x = Game.clamp(this.x, 0, Game.WIDTH - 32);
+        this.y = Game.clamp(this.y, 0, Game.HEIGHT - 72);
+    }
 
-            if (tempObj.getID() == ID.Enemy || tempObj.getID() == ID.FastEnemy) {
-                if (tempObj.getBounds().intersects(this.getBounds())) {
+    private void generateTrail() {
+        Trail t = new Trail(x, y, 32, 32, 0.05f, ID.Player,Color.RED, handler);
+        handler.addObject(t);
+    }
 
-                    Window.HeadUpDisplay.HEALTH -= 2;  //if a collision occurs, then you subtract some of the health
-
-                    hitState = true;
-
-                    if (greenValue - 5 >= 0) {
-                        greenValue -= 5;
-                    } else
-                        greenValue = 0;
-                }
+    private void collision() {
+        LinkedList<GameObject> gameObjects = handler.getGameObjects();
+        for (GameObject gameObj : gameObjects) {
+            if (isEnemy(gameObj) && isColliding(gameObj)) {
+                handleCollision();
             }
-
         }
     }
 
+    private boolean isEnemy(GameObject gameObj) {
+        return (gameObj.getID() == ID.Enemy || gameObj.getID() == ID.FastEnemy);
+    }
+
+    private boolean isColliding(GameObject gameObj) {
+        return gameObj.getBounds().intersects(this.getBounds());
+    }
+
+    private void handleCollision() {
+        isPlayerHit = true;
+        Window.HeadUpDisplay.HEALTH -= 2;
+        if (greenValue - 5 >= 0) {
+            greenValue -= 5;
+        } else {
+            greenValue = 0;
+        }
+    }
 
     @Override
     public void render(Graphics g) {
@@ -69,12 +72,6 @@ public class Player extends GameObject {
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int) x, (int) y, 32,32);      //returns a rectangle at the posn of the Player, and of size of Player
+        return new Rectangle((int) x, (int) y, 32,32);
     }
-
-
-
-
-
-
 }

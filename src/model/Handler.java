@@ -26,4 +26,8 @@ public class Handler {
     public void removeObject(GameObject gameObj) {
         gameObjects.remove(gameObj);
     }
+
+    public LinkedList<GameObject> getGameObjects() {
+        return gameObjects;
+    }
 }
