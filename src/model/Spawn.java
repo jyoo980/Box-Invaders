@@ -1,8 +1,5 @@
 package model;
 
-import model.enemy.BasicEnemy;
-import model.enemy.FasterEnemy;
-import model.enemy.SmartEnemy;
 import ui.Game;
 import ui.Window;
 

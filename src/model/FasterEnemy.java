@@ -1,4 +1,4 @@
-package model.enemy;
+package model;
 
 import model.GameObject;
 import model.Handler;

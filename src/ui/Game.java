@@ -2,7 +2,7 @@ package ui;
 
 import hardware.KeyInput;
 import model.*;
-import model.enemy.BasicEnemy;
+import model.BasicEnemy;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
